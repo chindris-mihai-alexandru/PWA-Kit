@@ -54,7 +54,10 @@ jobs:
         
     - name: Run Tests
       run: |
-        swift test || echo "No tests defined yet - skipping"
+        if swift test 2>&1 | grep -q "no test"; then
+          echo "⚠️  No tests defined yet - skipping"
+          exit 0
+        fi
       
     - name: Build All Apps (via Makefile)
       run: |

@@ -21,7 +21,7 @@
   - **v1.0**: Full rebrand with new repo, archive old one
 
 **Internal Use**:
-- Local directory: `/Volumes/990Pro2TB/UniteFixKit/WebKitForge/` (easier to remember)
+- Local directory: `<project-root>/` (easier to remember)
 - Code namespace: Still `MacPin` module (avoid breaking changes)
 - Marketing: "WebKitForge" in docs/website (test market receptivity)
 
@@ -67,11 +67,11 @@
 
 ### 3. **Repository Cleanup Strategy** ✅
 
-**Decision**: Restructure `/Volumes/990Pro2TB/UniteFixKit/` immediately
+**Decision**: Restructure `<legacy-dir>/` immediately
 
 **Current Mess**:
 ```
-/Volumes/990Pro2TB/UniteFixKit/
+<legacy-dir>/
 ├── WebKitForge/           # Active project
 ├── UniteFixKit.m          # Old Unite hack (REMOVE)
 ├── UniteFixKit.dylib      # Old Unite hack (REMOVE)
@@ -83,7 +83,7 @@
 
 **Clean Structure**:
 ```
-/Volumes/990Pro2TB/Projects/
+<projects-dir>/
 └── WebKitForge/           # Single project directory
     ├── .git/
     ├── Package.swift
@@ -98,7 +98,7 @@
 **Migration Plan**:
 ```bash
 # Step 1: Move WebKitForge out of UniteFixKit
-cd /Volumes/990Pro2TB
+cd <parent-dir>
 mkdir -p Projects
 mv UniteFixKit/WebKitForge Projects/WebKitForge
 

@@ -167,7 +167,7 @@ We take security seriously. If you discover a vulnerability:
 
 ### **For Critical Vulnerabilities** (RCE, data leaks, privilege escalation):
 1. **DO NOT** open a public GitHub issue
-2. Email: **[mihai.chindris@example.com]** (replace with actual email)
+2. Email: **chindris.mihai.alexandru@gmail.com**
 3. Subject: "SECURITY: [Brief Description]"
 4. Include:
    - Vulnerability description
@@ -310,7 +310,7 @@ Special thanks to security researchers who have contributed (none yet, you could
 
 ## Contact
 
-**Security Team**: [mihai.chindris@example.com] (update with real contact)  
+**Security Team**: chindris.mihai.alexandru@gmail.com  
 **General Issues**: [GitHub Issues](https://github.com/chindris-mihai-alexandru/MacPin/issues)  
 **GPG Key**: (to be added in v1.0)
 
