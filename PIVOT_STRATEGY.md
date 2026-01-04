@@ -144,17 +144,22 @@ Architecture:
 
 ## Technical Roadmap
 
-### Phase 1: Rebrand & Stabilize (Q1 2026)
+### Phase 1: Rebrand & Stabilize (Q1 2026) ✅ COMPLETE
 - [x] Rename PWA-Kit to Orbit
-- [ ] Update README, branding, documentation
-- [ ] Fix MacPin PR review issues (security email, CI tests)
-- [ ] Complete Swift 5.10/macOS 14 modernization
-- [ ] Create GitHub repo: `chindris-mihai-alexandru/Orbit`
+- [x] Update README, branding, documentation
+- [x] Complete Swift 5.10/macOS 14 modernization
+- [x] Create GitHub repo: `chindris-mihai-alexandru/Orbit`
+- [x] Add test infrastructure (27 unit tests)
+- [x] Set up Codecov integration
 
-### Phase 2: AI Sidecar MVP (Q1-Q2 2026)
-- [ ] Implement `NSSplitViewController` sidebar architecture
-- [ ] Create `PageContextExtractor` (JS injection)
-- [ ] Build `OllamaClient` with streaming support
+### Phase 2: AI Sidecar MVP (Q1-Q2 2026) 🔄 IN PROGRESS
+- [x] Create `PageContextExtractor` (JS injection) ✅
+- [x] Build `OllamaClient` with streaming support ✅
+- [x] Create `AISidebarView` SwiftUI interface ✅
+- [x] Add ollama-swift dependency ✅
+- [ ] Implement `NSSplitViewController` sidebar architecture ← NEXT
+- [ ] Wire webView attachment when tabs change
+- [ ] Add keyboard shortcut (⌘⇧A) for sidebar toggle
 - [ ] Add Settings UI for model configuration
 - [ ] Test with 3-5 common web apps (Gmail, GitHub, Jira)
 
@@ -257,5 +262,65 @@ When implementing Orbit features, follow this priority:
 
 ---
 
-*Last Updated: January 4, 2026*
-*Document Version: 1.0*
+---
+
+## Implementation Notes
+
+### AI Sidecar Files (Completed Jan 5, 2026)
+
+```
+Sources/MacPinOSX/AI/
+├── OllamaClient.swift       # @MainActor Ollama API wrapper
+│   - checkConnection(), listModels()
+│   - chat(), chatStream() with PageContext
+│   - ask(), summarize(), explain() convenience methods
+│
+├── PageContextExtractor.swift # JavaScript bridge
+│   - extractContext() - full page context
+│   - extractSelectedText() - selected text only
+│   - WKWebView.extractAIContext() extension
+│
+└── AISidebarView.swift       # SwiftUI chat interface
+    - AIChatMessage model
+    - AISidebarViewModel (ObservableObject)
+    - AISidebarView with chat UI
+    - AISidebarViewController (NSViewController wrapper)
+```
+
+### NSSplitViewController Pattern (Next Step)
+
+From Exa code search, the recommended pattern:
+
+```swift
+// In main window controller
+class MainSplitViewController: NSSplitViewController {
+    private var aiPanelItem: NSSplitViewItem!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Browser content
+        let browserItem = NSSplitViewItem(viewController: browserVC)
+        addSplitViewItem(browserItem)
+        
+        // AI sidebar (collapsible)
+        let aiVC = AISidebarViewController()
+        aiPanelItem = NSSplitViewItem(sidebarWithViewController: aiVC)
+        aiPanelItem.canCollapse = true
+        aiPanelItem.isCollapsed = true // Start hidden
+        addSplitViewItem(aiPanelItem)
+    }
+    
+    @IBAction func toggleAIPanel(_ sender: Any?) {
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.25
+            aiPanelItem.animator().isCollapsed.toggle()
+        }
+    }
+}
+```
+
+---
+
+*Last Updated: January 5, 2026*
+*Document Version: 1.1*
