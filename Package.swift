@@ -17,7 +17,8 @@ let package = Package(
     dependencies: [
         .package(path: "modules/Linenoise"),
         .package(path: "modules/UTIKit"),
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
+        // Pinned to 1.5.0 - version 1.7.0+ requires Swift 6 features (AccessLevelOnImport)
+        .package(url: "https://github.com/apple/swift-argument-parser", exact: "1.5.0"),
         // AI Sidecar: Ollama client for local LLM integration
         .package(url: "https://github.com/mattt/ollama-swift", from: "1.0.0"),
     ],
