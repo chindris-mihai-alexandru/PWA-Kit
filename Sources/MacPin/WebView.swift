@@ -1511,4 +1511,15 @@ extension MPWebView { // NSTextFinderClient
 	}
 
 }
+
+extension MPWebView { // Context Menu Customization
+    
+    /// Override willOpenMenu to add AI context menu items
+    @objc override open func willOpenMenu(_ menu: NSMenu, with event: NSEvent) {
+        super.willOpenMenu(menu, with: event)
+        
+        // Add Orbit AI menu items
+        addAIContextMenuItems(to: menu)
+    }
+}
 #endif

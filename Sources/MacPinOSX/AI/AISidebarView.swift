@@ -57,6 +57,7 @@ public final class AISidebarViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var navigationObserver: Any?
     private var selectionObserver: Any?
+    private var contextMenuObserver: Any?
     
     // MARK: - Initialization
     
@@ -64,6 +65,7 @@ public final class AISidebarViewModel: ObservableObject {
         self.client = OllamaClient()
         setupNavigationObserver()
         setupSelectionObserver()
+        setupContextMenuObserver()
         Task {
             await checkConnection()
         }
@@ -74,6 +76,9 @@ public final class AISidebarViewModel: ObservableObject {
             NotificationCenter.default.removeObserver(observer)
         }
         if let observer = selectionObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        if let observer = contextMenuObserver {
             NotificationCenter.default.removeObserver(observer)
         }
     }
@@ -130,6 +135,49 @@ public final class AISidebarViewModel: ObservableObject {
     private func setupSelectionMonitoring() async {
         guard let webView = webView else { return }
         await webView.setupSelectionMonitoring()
+    }
+    
+    // MARK: - Context Menu Observer
+    
+    private func setupContextMenuObserver() {
+        // Observe when user selects "Ask Orbit AI" from context menu
+        contextMenuObserver = NotificationCenter.default.addObserver(
+            forName: .askOrbitAI,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self = self else { return }
+            
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                // Handle the context menu action
+                if let notificationWebView = notification.object as? WKWebView,
+                   notificationWebView === self.webView {
+                    if let userInfo = notification.userInfo,
+                       let text = userInfo["selectedText"] as? String,
+                       let actionStr = userInfo["action"] as? String,
+                       !text.isEmpty {
+                        await self.handleContextMenuAction(text: text, action: actionStr)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func handleContextMenuAction(text: String, action: String) async {
+        switch action {
+        case "explain":
+            inputText = "Please explain: \"\(text)\""
+        case "define":
+            inputText = "Please define: \"\(text)\""
+        case "translate":
+            inputText = "Please translate to English: \"\(text)\""
+        case "summarize":
+            inputText = "Please summarize: \"\(text)\""
+        default: // "ask"
+            inputText = "Regarding this text: \"\(text)\""
+        }
+        await sendMessage()
     }
     
     // MARK: - Connection Management
